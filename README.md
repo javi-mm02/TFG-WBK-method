@@ -23,14 +23,16 @@ pip install -r requirements.txt
 From the root directory of the repository, each script can be run with:
 
 ```bash
-python scripts/name_of_the_script.py
+python "scripts/Alpha decay.py"
+python "scripts/Anharmonic oscillator.py"
+python "scripts/Double Well.py"
+python "scripts/Harmonic Oscillator.py"
+python "scripts/Quasi-stationary states.py"
+python "scripts/Schematic Wavefunction.py"
+python "scripts/WBK-Airy Figures.py"
 ```
 
-For example:
-
-```bash
-python scripts/double_well.py
-```
+The quotation marks are required because some filenames contain spaces.
 
 The scripts save generated figures in `figures/` and numerical outputs in `results/`.
 
