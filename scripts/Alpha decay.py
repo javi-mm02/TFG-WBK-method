@@ -14,12 +14,6 @@ import matplotlib.pyplot as plt
 MAKE_PLOTS = True
 MAKE_SENSITIVITY_TABLE = True
 
-
-# Carpetas del repositorio
-# Se asume que el script está dentro de la carpeta scripts/.
-# Por tanto:
-# - las tablas y archivos numéricos se guardan en results/,
-# - las figuras se guardan en figures/.
 PROJECT_DIR = Path(__file__).resolve().parents[1]
 RESULTS_DIR = PROJECT_DIR / "results"
 FIGURES_DIR = PROJECT_DIR / "figures"
@@ -28,8 +22,7 @@ RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 FIGURES_DIR.mkdir(parents=True, exist_ok=True)
 
 
-# Configuración gráfica común
-# Se fija un estilo homogéneo con el resto de figuras del trabajo.
+# Configuración gráfica
 plt.rcParams.update({
     "font.family": "serif",
     "mathtext.fontset": "dejavuserif",
@@ -48,7 +41,7 @@ plt.rcParams.update({
 
 
 # ============================================================
-# PARÁMETROS FÍSICOS DEL SISTEMA
+# PARÁMETROS FÍSICOS
 # ============================================================
 
 # Parámetros del decaimiento alfa:
@@ -75,16 +68,9 @@ class AlphaDecayParameters:
 
 
 # ============================================================
-# CONSTANTES FÍSICAS Y UNIDADES
+# CONSTANTES
 # ============================================================
 
-# Unidades usadas:
-# - energía en megaelectronvoltios,
-# - distancia en femtómetros,
-# - tiempo en segundos.
-#
-# HBAR_C permite escribir las acciones de Wentzel, Kramers y Brillouin,
-# abreviado como WBK, como integrales adimensionales.
 HBAR_C = 197.3269804
 E2_OVER_4PI_EPS0 = 1.439964
 AMU_C2 = 931.49410242
@@ -116,8 +102,6 @@ def nuclear_radius(A_d: int, r0: float) -> float:
 # POTENCIAL EFECTIVO RADIAL
 # ============================================================
 
-# Parte nuclear atractiva de Woods-Saxon.
-# La función acepta tanto escalares como arrays de NumPy.
 def woods_saxon_potential(r, params: AlphaDecayParameters):
     R = nuclear_radius(params.A_d, params.r0)
     r_array = np.asarray(r)
@@ -131,8 +115,6 @@ def woods_saxon_potential(r, params: AlphaDecayParameters):
 
 
 # Potencial de Coulomb.
-# Dentro del radio de Coulomb se usa el potencial de una esfera uniformemente
-# cargada; fuera de ella, el potencial Coulombiano puntual.
 def coulomb_potential(r, params: AlphaDecayParameters):
     Z_alpha = 2
     R_C = nuclear_radius(params.A_d, params.r0_coulomb)
@@ -153,8 +135,6 @@ def coulomb_potential(r, params: AlphaDecayParameters):
 
 
 # Término centrífugo con corrección de Langer.
-# La corrección sustituye l(l+1) por (l+1/2)^2 en el tratamiento radial
-# semiclasico.
 def centrifugal_potential(r, params: AlphaDecayParameters, mu_c2: float):
     r_array = np.asarray(r)
     l_eff = params.l + 0.5
@@ -167,8 +147,7 @@ def centrifugal_potential(r, params: AlphaDecayParameters, mu_c2: float):
     return value
 
 
-# Potencial efectivo radial completo:
-# V_eff = V_N + V_C + V_Langer.
+# Potencial efectivo radial completo
 def effective_potential(r, params: AlphaDecayParameters, mu_c2: float):
     return (
         woods_saxon_potential(r, params)
@@ -177,18 +156,16 @@ def effective_potential(r, params: AlphaDecayParameters, mu_c2: float):
     )
 
 
-# Función cuyas raíces dan los puntos de giro:
-# V_eff(r) - Q_alpha = 0.
+# Puntos de giro
 def turning_function(r, params: AlphaDecayParameters, mu_c2: float):
     return effective_potential(r, params, mu_c2) - params.Q_alpha
 
 
 # ============================================================
-# MÉTODOS NUMÉRICOS BÁSICOS
+# RESOLUCIÓN NUMÉRICAS
 # ============================================================
 
-# Método de bisección para localizar una raíz dentro de un intervalo.
-# Se usa tanto para puntos de giro como para la calibración de V0.
+# Método de bisección
 def bisection_root(
     function,
     left: float,
@@ -222,13 +199,7 @@ def bisection_root(
     return 0.5 * (left + right)
 
 
-# Integración con cambio de variable adaptado a los puntos de giro.
-# Se usa:
-#
-#     r = left + (right - left) sin^2(theta)
-#
-# De esta forma se suaviza el comportamiento integrable de las raíces
-# cuadradas cerca de los puntos de giro.
+# Integración con cambio de variable
 def integrate_with_turning_points(
     function,
     left: float,
@@ -266,10 +237,6 @@ def integrate_with_turning_points(
 # PUNTOS DE GIRO
 # ============================================================
 
-# Búsqueda de los tres puntos de giro radiales.
-# Para el potencial efectivo de este ejemplo aparecen:
-# - r1 y r2, que delimitan la región interna permitida,
-# - r2 y r3, que delimitan la barrera de túnel.
 def find_turning_points(
     params: AlphaDecayParameters,
     mu_c2: float,
@@ -318,7 +285,7 @@ def find_turning_points(
 # MAGNITUDES SEMICLÁSICAS
 # ============================================================
 
-# Número de onda en la región permitida:
+# Número de onda
 #
 #     k(r) = sqrt(2 mu c^2 [Q_alpha - V_eff(r)]) / (hbar c).
 def allowed_wave_number(r, params: AlphaDecayParameters, mu_c2: float):
@@ -326,21 +293,19 @@ def allowed_wave_number(r, params: AlphaDecayParameters, mu_c2: float):
     return np.sqrt(2.0 * mu_c2 * np.maximum(value, 0.0)) / HBAR_C
 
 
-# Integrando de la acción bajo la barrera:
-#
-#     sqrt(2 mu c^2 [V_eff(r) - Q_alpha]) / (hbar c).
+# Acción bajo la barrera
 def barrier_integrand(r, params: AlphaDecayParameters, mu_c2: float):
     value = effective_potential(r, params, mu_c2) - params.Q_alpha
     return np.sqrt(2.0 * mu_c2 * np.maximum(value, 0.0)) / HBAR_C
 
 
-# Velocidad radial adimensional v/c en la región permitida interna.
+# Velocidad radial
 def allowed_velocity_over_c(r, params: AlphaDecayParameters, mu_c2: float):
     value = params.Q_alpha - effective_potential(r, params, mu_c2)
     return np.sqrt(2.0 * np.maximum(value, 0.0) / mu_c2)
 
 
-# Acción interna usada en la condición de Bohr-Sommerfeld.
+# Acción interna
 def compute_internal_action(
     r1: float,
     r2: float,
@@ -356,7 +321,6 @@ def compute_internal_action(
 
 
 # Acción de penetración en la región prohibida.
-# Esta integral controla exponencialmente la probabilidad de túnel.
 def compute_barrier_action(
     r2: float,
     r3: float,
@@ -371,9 +335,7 @@ def compute_barrier_action(
     )
 
 
-# Frecuencia de asalto estimada a partir del movimiento interno.
-# Se calcula como el inverso del tiempo de ida y vuelta dentro de la región
-# permitida interna.
+# Frecuencia de asalto
 def compute_assault_frequency(
     r1: float,
     r2: float,
@@ -417,12 +379,11 @@ def compute_assault_frequency(
 # CALIBRACIÓN DE LA PROFUNDIDAD DEL WOODS-SAXON
 # ============================================================
 
-# Término derecho de la condición de cuantización interna.
 def bohr_sommerfeld_target(params: AlphaDecayParameters) -> float:
     return (params.n_radial + 0.5) * np.pi
 
 
-# Acción interna para un valor dado de profundidad nuclear V0.
+# Acción interna para un valor dado de V0.
 def internal_action_for_depth(
     V0: float,
     params: AlphaDecayParameters,
@@ -449,7 +410,7 @@ def internal_action_for_depth(
     return internal_action
 
 
-# Calibración de V0 mediante la condición interna de Bohr-Sommerfeld.
+# Calibración de V0 mediante Bohr-Sommerfeld.
 # Se busca la profundidad nuclear que hace que la acción interna coincida
 # con el valor semiclasico impuesto.
 def calibrate_woods_saxon_depth(
@@ -534,12 +495,9 @@ def calibrate_woods_saxon_depth(
 
 
 # ============================================================
-# CÁLCULO PRINCIPAL DEL DECAIMIENTO ALFA
+# CÁLCULO PRINCIPAL
 # ============================================================
 
-# Cálculo principal para un conjunto de parámetros ya fijado.
-# Se calculan puntos de giro, acciones, probabilidad de penetración, frecuencia
-# de asalto, anchura y semivida.
 def run_case(params: AlphaDecayParameters) -> dict:
     mu_c2 = reduced_mass_c2(params.A_d)
 
@@ -620,7 +578,7 @@ def run_case(params: AlphaDecayParameters) -> dict:
     }
 
 
-# Calibración de V0 y ejecución del caso calibrado.
+# Calibración de V0
 def calibrate_and_run_case(
     params: AlphaDecayParameters,
 ) -> tuple[AlphaDecayParameters, float, float, dict]:
@@ -643,10 +601,10 @@ def calibrate_and_run_case(
 
 
 # ============================================================
-# IMPRESIÓN DE RESULTADOS
+# RESULTADOS
 # ============================================================
 
-# Impresión de los resultados principales en consola.
+# Resultados principales
 def print_results(
     params_initial: AlphaDecayParameters,
     params_calibrated: AlphaDecayParameters,
@@ -707,8 +665,6 @@ def print_results(
 # ANÁLISIS DE SENSIBILIDAD
 # ============================================================
 
-# Construcción de variantes para el análisis de sensibilidad.
-# Se modifica un parámetro cada vez y se mantiene el resto fijo.
 def make_modified_params(
     base_params: AlphaDecayParameters,
     *,
@@ -731,8 +687,7 @@ def make_modified_params(
     )
 
 
-# Tabla de sensibilidad frente a los parámetros principales del modelo.
-# En cada caso se recalibra V0 mediante la condición interna.
+# Tabla de sensibilidad frente a los parámetros principales.
 def make_alpha_sensitivity_table(base_params: AlphaDecayParameters) -> list[dict]:
     cases = [
         ("Reference", base_params),
@@ -859,10 +814,9 @@ def save_alpha_sensitivity_table(table_rows: list[dict]) -> None:
 
 
 # ============================================================
-# FIGURA DEL POTENCIAL EFECTIVO
+# FIGURA POTENCIAL EFECTIVO
 # ============================================================
 
-# Figura del potencial efectivo radial y de los tres puntos de giro.
 def make_potential_plot(params: AlphaDecayParameters, results: dict) -> None:
     mu_c2 = results["mu_c2"]
 
@@ -920,12 +874,9 @@ def make_potential_plot(params: AlphaDecayParameters, results: dict) -> None:
 
 
 # ============================================================
-# FIGURA DE SENSIBILIDAD EN Q_ALPHA
+# FIGURA SENSIBILIDAD Q_ALPHA
 # ============================================================
 
-# Sensibilidad de la semivida estimada frente al valor de Q_alpha.
-# Se calcula una familia de valores próximos a la energía de referencia y
-# se ajusta una recta a log10(t_1/2).
 def make_q_sensitivity_plot(params: AlphaDecayParameters) -> None:
     Q_values = np.linspace(params.Q_alpha - 0.5, params.Q_alpha + 0.5, 41)
     log10_half_lives = []
@@ -1050,11 +1001,6 @@ def make_q_sensitivity_plot(params: AlphaDecayParameters) -> None:
 # CASO PRINCIPAL
 # ============================================================
 
-# Caso estudiado:
-# 212Po -> 208Pb + alpha.
-#
-# El valor de V0 inicial se usa como punto de partida; posteriormente se
-# recalibra para que la acción interna cumpla la condición de cuantización.
 if __name__ == "__main__":
     initial_params = AlphaDecayParameters(
         A_d=208,
