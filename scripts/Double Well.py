@@ -6,11 +6,6 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle, ConnectionPatch
 from matplotlib.ticker import FormatStrFormatter
 
-
-# =============================================================================
-# CARPETAS DEL REPOSITORIO
-# =============================================================================
-
 PROJECT_DIR = Path(__file__).resolve().parents[1]
 RESULTS_DIR = PROJECT_DIR / "results"
 FIGURES_DIR = PROJECT_DIR / "figures"
@@ -20,11 +15,10 @@ FIGURES_DIR.mkdir(parents=True, exist_ok=True)
 
 
 # =============================================================================
-# CÁLCULO DEL DESDOBLAMIENTO DE NIVELES EN EL DOBLE POZO
+# CÁLCULO DEL DESDOBLAMIENTO
 # =============================================================================
 
 MAKE_PLOT = True
-
 
 @dataclass
 class DoubleWellParameters:
@@ -38,7 +32,7 @@ class DoubleWellParameters:
 
 
 # =============================================================================
-# POTENCIAL Y MAGNITUDES BÁSICAS
+# MAGNITUDES BÁSICAS
 # =============================================================================
 
 def potential(q, params: DoubleWellParameters):
@@ -112,7 +106,7 @@ def outer_turning_points_for_energy(
 
 
 # =============================================================================
-# INTEGRACIÓN NUMÉRICA BAJO LA BARRERA
+# INTEGRACIÓN NUMÉRICA BAJO BARRERA
 # =============================================================================
 
 def integrate_with_turning_points(
@@ -195,7 +189,7 @@ def wbk_splitting(
 
 
 # =============================================================================
-# DIAGONALIZACIÓN NUMÉRICA DE SCHRÖDINGER
+# DIAGONALIZACIÓN NUMÉRICA SCHRÖDINGER
 # =============================================================================
 
 def build_hamiltonian_matrix(params: DoubleWellParameters) -> tuple[np.ndarray, np.ndarray]:
@@ -404,7 +398,7 @@ def save_latex_table(rows: list[dict]) -> None:
 
 
 # =============================================================================
-# FIGURA ÚNICA DEL DOBLE POZO CON VENTANAS DE ZOOM
+# FIGURA DOBLE POZO
 # =============================================================================
 
 def make_splitting_plot(params: DoubleWellParameters, rows: list[dict]) -> None:
@@ -430,7 +424,7 @@ def make_splitting_plot(params: DoubleWellParameters, rows: list[dict]) -> None:
 
     fig = plt.figure(figsize=(12.0, 6.4))
 
-    # Eje principal. Se deja espacio a la derecha para las ventanas externas.
+    # Eje principal
     ax = fig.add_axes([0.075, 0.115, 0.65, 0.75])
 
     ax.plot(
@@ -514,7 +508,7 @@ def make_splitting_plot(params: DoubleWellParameters, rows: list[dict]) -> None:
         y=0.95,
     )
 
-    # Reescalado vertical progresivo.
+    # Reescalado vertical.
     min_delta = min(level["delta_e"] for level in level_data)
     max_delta = max(level["delta_e"] for level in level_data)
 
@@ -529,7 +523,7 @@ def make_splitting_plot(params: DoubleWellParameters, rows: list[dict]) -> None:
         for level in level_data:
             level["target_gap_fraction"] = 0.45
 
-    # Ventanas externas: más estrechas.
+    # Ventanas externas
     inset_positions = [
         [0.75, 0.15, 0.15, 0.15],
         [0.75, 0.45, 0.15, 0.15],
@@ -550,7 +544,6 @@ def make_splitting_plot(params: DoubleWellParameters, rows: list[dict]) -> None:
         y_min = e_center - y_half_width
         y_max = e_center + y_half_width
 
-        # Las líneas ocupan toda la ventana horizontalmente.
         inset.hlines(
             e_center,
             0.0,
@@ -581,7 +574,7 @@ def make_splitting_plot(params: DoubleWellParameters, rows: list[dict]) -> None:
         inset.set_ylim(y_min, y_max)
         inset.set_xticks([])
 
-        # Escala vertical propia de cada ventana, situada a la derecha.
+        # Escala vertical de cada ventana
         inset.set_yticks([y_min, e_center, y_max])
         inset.yaxis.set_major_formatter(FormatStrFormatter("%.6f"))
 
@@ -597,7 +590,6 @@ def make_splitting_plot(params: DoubleWellParameters, rows: list[dict]) -> None:
             left=False,
         )
 
-        # Etiqueta n centrada encima de cada ventana.
         inset.text(
             0.5,
             1.0,
@@ -609,7 +601,6 @@ def make_splitting_plot(params: DoubleWellParameters, rows: list[dict]) -> None:
             clip_on=False,
         )
 
-        # Valor del splitting centrado debajo de cada ventana.
         inset.text(
             0.5,
             -0.15,
@@ -624,16 +615,12 @@ def make_splitting_plot(params: DoubleWellParameters, rows: list[dict]) -> None:
         for spine in inset.spines.values():
             spine.set_linewidth(0.95)
 
-        # Región ampliada en el eje principal, cerca del punto de giro derecho.
         q_right_ref = level["qr_center"]
         x_box_left = q_right_ref - 0.5
         x_box_right = q_right_ref -0.1
 
         box_height_factor = 2
 
-        # Altura mínima del recuadro en la escala vertical del potencial.
-        # Esto solo afecta al recuadro del gráfico principal, no a la escala
-        # vertical de la ventana de zoom.
         min_box_half_height = 0.05
 
         y_box_half_height = max(
@@ -656,7 +643,6 @@ def make_splitting_plot(params: DoubleWellParameters, rows: list[dict]) -> None:
         )
         ax.add_patch(rect)
 
-        # Conectores hacia la ventana.
         con_top = ConnectionPatch(
             xyA=(x_box_right, y_max),
             coordsA=ax.transData,
@@ -686,7 +672,7 @@ def make_splitting_plot(params: DoubleWellParameters, rows: list[dict]) -> None:
 
 
 # =============================================================================
-# CASO PRINCIPAL DEL CÁLCULO
+# CASO PRINCIPAL
 # =============================================================================
 
 if __name__ == "__main__":
