@@ -5,8 +5,6 @@ import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 from matplotlib.ticker import MultipleLocator
 
-
-# Configuración gráfica
 plt.rcParams.update({
     "font.family": "serif",
     "mathtext.fontset": "dejavuserif",
@@ -44,7 +42,7 @@ V_old = (
 energy = 2.2
 
 
-# Puntos de giro obtenidos a partir de V(q) = E
+# Puntos de giro
 diff = V_old - energy
 sign_change_indices = np.where(np.sign(diff[:-1]) != np.sign(diff[1:]))[0]
 
@@ -62,8 +60,6 @@ for index in sign_change_indices:
 
 q1_old, q2_old = turning_points_old
 
-
-# Coordenada reescalada: los puntos de giro quedan en q = -2 y q = 2
 q_center = 0.5 * (q1_old + q2_old)
 x_scale = 4.0 / (q2_old - q1_old)
 
@@ -73,8 +69,6 @@ potential_shifted = V_old - energy
 q1 = x_scale * (q1_old - q_center)
 q2 = x_scale * (q2_old - q_center)
 
-
-# Función de onda cualitativa: colas exponenciales y región permitida oscilatoria
 psi_color = "C1"
 
 amplitude_turning = 0.70
