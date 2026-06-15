@@ -5,20 +5,20 @@ Python scripts used to generate the numerical results and figures discussed in t
 ## Repository structure
 
 - `scripts/`: source Python scripts.
-- `figures/`: directory used by the scripts to save generated figures.
-- `results/`: directory used by the scripts to save numerical outputs and tables.
+- `figures/`: output directory for generated figures.
+- `results/`: output directory for generated numerical data and tables.
 
 ## Requirements
 
-The scripts require Python 3. The required packages are listed in `requirements.txt`.
+Python 3 is required. Dependencies are listed in `requirements.txt`.
 
-To install them, run:
+Installation:
 
     pip install -r requirements.txt
 
 ## Execution
 
-The scripts can be executed from the root directory of the repository. Since some filenames contain spaces, quotation marks should be used.
+Scripts are executed from the repository root. Quotation marks are used because some filenames contain spaces.
 
     python "scripts/Alpha decay.py"
     python "scripts/Anharmonic oscillator.py"
@@ -28,8 +28,8 @@ The scripts can be executed from the root directory of the repository. Since som
     python "scripts/Schematic Wavefunction.py"
     python "scripts/WBK-Airy Figures.py"
 
-Generated figures are saved in `figures/`. Numerical outputs are saved in `results/`.
+Generated figures are written to `figures/`. Numerical outputs are written to `results/`.
 
 ## Contents
 
-The repository contains scripts related to the semiclassical WBK method, including turning-point analysis, Airy-type uniform approximations, bound-state examples, double-well tunnelling, and alpha-decay barrier penetration.
+The scripts cover the numerical and graphical material associated with the semiclassical WBK treatment used in the thesis: turning-point structure, Airy-type approximations, bound-state examples, tunnelling in a symmetric double well, and alpha-decay barrier penetration.
