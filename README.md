@@ -1,18 +1,18 @@
-# WBK method: numerical scripts
+# TFG-WBK-method
 
-This repository contains the Python scripts used to generate the numerical results and figures discussed in the thesis.
+Python scripts used to generate the numerical results and figures discussed in the thesis.
 
 ## Repository structure
 
-* `scripts/`: Python scripts used for the numerical calculations and graphical representations.
-* `figures/`: output directory used by the scripts for generated figures.
-* `results/`: output directory used by the scripts for generated numerical tables and data files.
+* `scripts/`: source Python scripts.
+* `figures/`: directory used by the scripts to save generated figures.
+* `results/`: directory used by the scripts to save numerical outputs and tables.
 
 ## Requirements
 
-The scripts require Python 3 and the packages listed in `requirements.txt`.
+The scripts require Python 3. The required packages are listed in `requirements.txt`.
 
-The dependencies can be installed with:
+To install them, run:
 
 ```bash
 pip install -r requirements.txt
@@ -20,7 +20,7 @@ pip install -r requirements.txt
 
 ## Execution
 
-From the root directory of the repository, each script can be run with:
+The scripts can be executed from the root directory of the repository. Since some filenames contain spaces, quotation marks should be used.
 
 ```bash
 python "scripts/Alpha decay.py"
@@ -32,10 +32,8 @@ python "scripts/Schematic Wavefunction.py"
 python "scripts/WBK-Airy Figures.py"
 ```
 
-The quotation marks are required because some filenames contain spaces.
-
-The scripts save generated figures in `figures/` and numerical outputs in `results/`.
+Generated figures are saved in `figures/`. Numerical outputs are saved in `results/`.
 
 ## Contents
 
-The repository includes scripts for the one-dimensional WBK construction, turning-point analysis, bound-state examples, tunnelling in a symmetric double well, and alpha-decay barrier penetration.
+The repository contains scripts related to the semiclassical WBK method, including turning-point analysis, Airy-type uniform approximations, bound-state examples, double-well tunnelling and alpha-decay barrier penetration.
