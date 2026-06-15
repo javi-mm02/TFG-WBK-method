@@ -1,12 +1,13 @@
 # TFG-WBK-method
 
-Python scripts used to generate the numerical results and figures discussed in the thesis.
+Python scripts associated with the numerical calculations and graphical material used in the thesis.
 
-## Repository structure
+## Contents
 
 - `scripts/`: source Python scripts.
-- `figures/`: output directory for generated figures.
-- `results/`: output directory for generated numerical data and tables.
+- `requirements.txt`: Python package dependencies.
+
+Generated figures and numerical result files are not included in this repository. They are produced locally when the scripts are executed.
 
 ## Requirements
 
@@ -28,8 +29,6 @@ Scripts are executed from the repository root. Quotation marks are used because 
     python "scripts/Schematic Wavefunction.py"
     python "scripts/WBK-Airy Figures.py"
 
-Generated figures are written to `figures/`. Numerical outputs are written to `results/`.
-
-## Contents
+## Scope
 
 The scripts cover the numerical and graphical material associated with the semiclassical WBK treatment used in the thesis: turning-point structure, Airy-type approximations, bound-state examples, tunnelling in a symmetric double well, and alpha-decay barrier penetration.
