@@ -4,8 +4,6 @@ from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
 
-
-# Configuración gráfica
 plt.rcParams.update({
     "font.size": 20,
     "axes.labelsize": 22,
@@ -15,7 +13,7 @@ plt.rcParams.update({
 })
 
 
-# Parámetros del problema modelo
+# Parámetros
 HBAR = 1.0
 MASS = 1.0
 ENERGY = 0.0
@@ -44,7 +42,7 @@ def kappa_forbidden(q):
     return np.sqrt(np.maximum(value, 0.0)) / HBAR
 
 
-# Valores iniciales de Ai(0) y Ai'(0)
+# Valores iniciales Ai(0) y Ai'(0)
 AI0 = 1.0 / (3.0 ** (2.0 / 3.0) * math.gamma(2.0 / 3.0))
 AIP0 = -1.0 / (3.0 ** (1.0 / 3.0) * math.gamma(1.0 / 3.0))
 
@@ -150,8 +148,6 @@ def action_forbidden(q_values, n_steps=400):
 
     return action
 
-
-# Malla y regiones separadas del punto de giro
 q = np.linspace(Q_MIN, Q_MAX, N_POINTS)
 
 eps = 0.008
@@ -167,8 +163,6 @@ kappa_values = kappa_forbidden(q_forbidden)
 J_values = action_allowed(q_allowed)
 K_values = action_forbidden(q_forbidden)
 
-
-# Ramas WBK estándar a ambos lados del punto de giro
 normalization = 0.70
 
 allowed_prefactor = normalization / np.sqrt(np.pi)
@@ -194,7 +188,7 @@ envelope_positive = allowed_prefactor / np.sqrt(k_values)
 envelope_negative = -allowed_prefactor / np.sqrt(k_values)
 
 
-# Variable uniforme xi(q)
+# Variable xi(q)
 left_mask = q < TURNING_POINT
 right_mask = q > TURNING_POINT
 center_mask = np.isclose(q, TURNING_POINT, atol=1e-14)
@@ -213,7 +207,7 @@ if np.any(center_mask):
     xi[center_mask] = 0.0
 
 
-# Derivada xi'(q) obtenida de las relaciones del cambio uniforme
+# xi'(q)
 xi_prime = np.empty_like(q)
 
 if np.any(left_mask):
@@ -234,11 +228,10 @@ if np.any(center_mask):
             xi_prime[index] = xi_prime[index - 1]
 
 
-# Aproximación uniforme construida con la función de Airy
 psi_global = normalization * airy_ai(xi) / np.sqrt(xi_prime)
 
 
-# Magnitudes auxiliares para la representación gráfica
+# Magnitudes auxiliares
 airy_halfwidth = 0.55
 
 potential_scale = 0.18
@@ -379,7 +372,7 @@ def draw_variant(
         )
 
 
-# Figuras exportadas
+# Figuras
 fig, ax = plt.subplots(figsize=(12.0, 7.0))
 draw_variant(
     ax,
