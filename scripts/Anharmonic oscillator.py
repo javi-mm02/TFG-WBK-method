@@ -4,12 +4,8 @@ from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
 
-
-# Opciones generales de ejecución
 MAKE_PLOTS = True
 
-
-# Carpetas del repositorio
 PROJECT_DIR = Path(__file__).resolve().parents[1]
 RESULTS_DIR = PROJECT_DIR / "results"
 FIGURES_DIR = PROJECT_DIR / "figures"
@@ -36,7 +32,7 @@ plt.rcParams.update({
 })
 
 
-# Parámetros físicos y numéricos del oscilador anarmónico
+# Parámetros físicos
 @dataclass
 class AnharmonicOscillatorParameters:
     mass: float = 1.0
@@ -48,7 +44,7 @@ class AnharmonicOscillatorParameters:
     n_grid_schrodinger: int = 900
 
 
-# Potencial y momento clásico
+# Potencial y momento
 def anharmonic_potential(q, params: AnharmonicOscillatorParameters):
     q_array = np.asarray(q)
 
@@ -68,7 +64,7 @@ def classical_momentum(q, energy: float, params: AnharmonicOscillatorParameters)
     return np.sqrt(2.0 * params.mass * np.maximum(kinetic_energy, 0.0))
 
 
-# Punto de giro positivo obtenido de V(q) = E
+# Punto de giro
 def positive_turning_point(
     energy: float,
     params: AnharmonicOscillatorParameters,
@@ -91,7 +87,7 @@ def positive_turning_point(
     return float(np.sqrt(y_value))
 
 
-# Método de bisección para resolver las condiciones de cuantización
+# Bisección para resolver condiciones de cuantización
 def bisection_root(
     function,
     left: float,
@@ -125,7 +121,7 @@ def bisection_root(
     return 0.5 * (left + right)
 
 
-# Integración con cambio de variable adaptado al punto de giro
+# Integración
 def integrate_with_turning_point(
     function,
     left: float,
@@ -158,7 +154,7 @@ def integrate_with_turning_point(
     return float(integral_fine), float(stability)
 
 
-# Integral de acción cerrada usada en la cuantización WBK
+# Integral de acción
 def action_integral(
     energy: float,
     params: AnharmonicOscillatorParameters,
@@ -176,7 +172,7 @@ def action_integral(
     return 4.0 * quarter_action, 4.0 * stability
 
 
-# Término derecho de la condición de Bohr-Sommerfeld
+# Término derecho condición Bohr-Sommerfeld
 def bohr_sommerfeld_target(
     n: int,
     params: AnharmonicOscillatorParameters,
@@ -195,7 +191,7 @@ def quantization_residual(
     return action - target
 
 
-# Cota superior inicial para encerrar cada raíz WBK
+# Cota superior
 def estimate_energy_upper_bound(
     n: int,
     params: AnharmonicOscillatorParameters,
@@ -206,7 +202,7 @@ def estimate_energy_upper_bound(
     return 5.0 * (harmonic_energy + quartic_scale + 1.0)
 
 
-# Cálculo de un nivel mediante la condición de cuantización WBK
+# Cálculo de un nivel
 def find_wbk_energy(
     n: int,
     params: AnharmonicOscillatorParameters,
@@ -243,7 +239,7 @@ def find_wbk_energy(
     return energy, action_stability
 
 
-# Espectro semiclasico WBK
+# Espectro semiclasico
 def compute_wbk_spectrum(
     params: AnharmonicOscillatorParameters,
 ) -> list[dict]:
@@ -302,7 +298,7 @@ def build_schrodinger_hamiltonian(
     return q_inner, hamiltonian
 
 
-# Solución numérica directa de la ecuación de Schrödinger estacionaria
+# Solución numérica directa de Schrödinger
 def solve_schrodinger_finite_difference(
     params: AnharmonicOscillatorParameters,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
@@ -327,7 +323,7 @@ def solve_schrodinger_finite_difference(
     return q_inner, selected_values, selected_vectors
 
 
-# Tabla comparativa entre niveles WBK y niveles numéricos
+# Tabla comparativa entre niveles WBK y numéricos
 def build_comparison_table(
     wbk_levels: list[dict],
     numerical_energies: np.ndarray,
@@ -358,7 +354,7 @@ def build_comparison_table(
     return table
 
 
-# Exportación de resultados numéricos
+# Exportación de resultados
 def save_comparison_table(table: list[dict]) -> None:
     output_path = RESULTS_DIR / "anharmonic_spectrum_comparison.csv"
 
@@ -387,7 +383,7 @@ def save_comparison_table(table: list[dict]) -> None:
             )
 
 
-# Impresión de resultados principales en consola
+# Impresión de resultados
 def print_results(
     params: AnharmonicOscillatorParameters,
     table: list[dict],
@@ -425,7 +421,7 @@ def print_results(
         )
 
 
-# Figura del potencial con niveles WBK y niveles numéricos
+# Figura del potencial
 def make_potential_plot(
     params: AnharmonicOscillatorParameters,
     table: list[dict],
@@ -487,7 +483,7 @@ def make_potential_plot(
     plt.close(fig)
 
 
-# Figura del error relativo entre el resultado semiclasico y el numérico
+# Figura del error relativo
 def make_error_plot(table: list[dict]) -> None:
     n_values = np.array([row["n"] for row in table])
     relative_errors = np.array([row["relative_error"] for row in table])
@@ -518,7 +514,7 @@ def make_error_plot(table: list[dict]) -> None:
     plt.close(fig)
 
 
-# Figura de funciones propias numéricas desplazadas por su energía
+# Figura de funciones numéricas
 def make_wavefunction_plot(
     params: AnharmonicOscillatorParameters,
     q_inner: np.ndarray,
@@ -573,7 +569,7 @@ def make_wavefunction_plot(
     plt.close(fig)
 
 
-# Ejecución completa del caso: WBK, solución numérica y comparación
+# Ejecución del caso: WBK, numérica y comparación
 def run_case(params: AnharmonicOscillatorParameters) -> dict:
     wbk_levels = compute_wbk_spectrum(params)
 
