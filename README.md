@@ -7,7 +7,7 @@ Python scripts associated with the numerical calculations and graphical material
 - `scripts/`: source Python scripts.
 - `requirements.txt`: Python package dependencies.
 
-Generated figures and numerical result files are not included in this repository. They are produced locally when the scripts are executed.
+The figures and numerical results are generated when the scripts are executed.
 
 ## Requirements
 
