@@ -3,8 +3,6 @@ from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
 
-
-# Configuración gráfica
 plt.rcParams.update({
     "font.family": "serif",
     "mathtext.fontset": "dejavuserif",
@@ -21,30 +19,28 @@ plt.rcParams.update({
     "savefig.pad_inches": 0.03,
 })
 
-
-# Carpeta de salida
 OUTPUT_DIR = Path(__file__).resolve().parents[1] / "figures"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 
-# Parámetros del oscilador armónico
+# Parámetros
 mass = 1.0
 omega = 1.0
 energy = 4.0
 
 
-# Dominio de representación
+# Dominio
 q_min = -4.5
 q_max = 4.5
 q = np.linspace(q_min, q_max, 1000)
 
 
-# Potencial armónico unidimensional
+# Potencial
 def potential(q_values):
     return 0.5 * mass * omega**2 * q_values**2
 
 
-# Puntos de giro clásicos obtenidos de V(q) = E
+# Puntos de giro
 q_turn = np.sqrt(2.0 * energy / (mass * omega**2))
 q1 = -q_turn
 q2 = q_turn
@@ -70,8 +66,6 @@ ax.axhline(
     label=r"$E$",
 )
 
-
-# Marcado de los puntos de giro
 ax.vlines(
     [q1, q2],
     ymin=-2.0,
@@ -80,8 +74,6 @@ ax.vlines(
     linewidth=1.2,
 )
 
-
-# Puntos sobre los puntos de giro
 ax.scatter(
     [q1, q2],
     [energy, energy],
@@ -90,8 +82,6 @@ ax.scatter(
     zorder=5,
 )
 
-
-# Sombreado de la región clásicamente permitida
 ax.fill_between(
     q[allowed_mask],
     potential_values[allowed_mask],
@@ -99,8 +89,6 @@ ax.fill_between(
     alpha=0.25,
 )
 
-
-# Etiquetas de puntos de giro y regiones clásicas
 ax.text(q1, energy + 0.2, r"$q_1$", ha="center", va="bottom", fontsize=15)
 ax.text(q2, energy + 0.2, r"$q_2$", ha="center", va="bottom", fontsize=15)
 
@@ -108,8 +96,6 @@ ax.text(0.0, -1.0, "Classically allowed", ha="center", fontsize=14)
 ax.text(q_min + 0.8, -1.0, "Forbidden", ha="center", fontsize=14)
 ax.text(q_max - 0.8, -1.0, "Forbidden", ha="center", fontsize=14)
 
-
-# Ajustes finales de la figura
 ax.set_xlim(q_min, q_max)
 ax.set_ylim(-2.0, max(potential_values.max(), energy) + 1.0)
 
