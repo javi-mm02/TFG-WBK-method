@@ -33,15 +33,7 @@ python "scripts/Harmonic Oscillator.py"
 python "scripts/Quasi-stationary states.py"
 python "scripts/Schematic Wavefunction.py"
 python "scripts/WBK-Airy Figures.py"
-```
-
-Validity-check scripts:
-
-```
 python "scripts/validity_exact_cases.py"
-python "scripts/Anharmonic oscillator_validity.py"
-python "scripts/Double Well_validity.py"
-python "scripts/Alpha decay_validity.py"
 ```
 
 The generated files are stored in:
