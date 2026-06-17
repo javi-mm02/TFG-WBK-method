@@ -49,6 +49,6 @@ These paths are relative to the local repository. Therefore, the absolute locati
 
 The scripts cover the numerical and graphical material associated with the semiclassical WBK treatment used in the thesis: turning-point structure, Airy-type approximations, bound-state examples, tunnelling in a symmetric double well, and alpha-decay barrier penetration.
 
-The validity-check scripts evaluate the local WBK validity criterion for the benchmark systems and numerical examples discussed in the thesis. They are intended to support the interpretation of the semiclassical results and the reproducibility of the numerical analysis.
+The validity-check scripts evaluate the WBK validity criterion for the benchmark systems and numerical examples discussed in the thesis. They are intended to support the interpretation of the semiclassical results and the reproducibility of the numerical analysis.
 
 The alpha-decay scripts perform the most expensive calculations because they include turning-point detection, numerical quadrature, recalibration of the effective potential and sensitivity checks. Their execution may therefore take longer than the other scripts.
